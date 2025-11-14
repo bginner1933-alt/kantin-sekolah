@@ -10,17 +10,17 @@
                         Tambah Produk
                     </div>
                     <div class="float-end">
-                        <a href="{{ route('kategori.index') }}" class="btn btn-sm btn-outline-primary">Kembali</a>
+                        <a href="{{ route('pelanggan.index') }}" class="btn btn-sm btn-outline-primary">Kembali</a>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('kategori.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('pelanggan.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Nama kategori</label>
+                            <label class="form-label">Nama Pelanggan</label>
                             <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
-                                value="{{ old('nama') }}" placeholder="Nama kategori" required>
+                                value="{{ old('nama') }}" placeholder="Nama Pelanggan" required>
                             @error('nama')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -48,8 +48,8 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-sm btn-outline-primary">Simpan</button>
-                        <button type="reset" class="btn btn-sm btn-outline-warning">Reset</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                        <button type="reset" class="btn btn-sm btn-warning">Reset</button>
 
                     </form>
                 </div>

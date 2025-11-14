@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\kategori;
+use App\Models\Pelanggan;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
@@ -10,21 +10,21 @@ class TransaksiController extends Controller
 {
     public function index()
     {
-        $transaksi = Transaksi::with(['kategori', 'produks'])->latest()->get();
+        $transaksi = Transaksi::with(['pelanggan', 'produks'])->latest()->get();
         return view('transaksi.index', compact('transaksi'));
     }
 
     public function create()
     {
-        $kategori = Kategori::all();
+        $pelanggan = Pelanggan::all();
         $produk    = Produk::all();
-        return view('transaksi.create', compact('kategori', 'produk'));
+        return view('transaksi.create', compact('pelanggan', 'produk'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_kategori' => 'required|exists:kategoris,id',
+            'id_pelanggan' => 'required|exists:pelanggans,id',
             'id_produk'    => 'required|array',
             'id_produk.*'  => 'exists:produks,id',
             'jumlah'       => 'required|array',
@@ -35,7 +35,7 @@ class TransaksiController extends Controller
         $kode                      = 'TRX-' . strtoupper(uniqid());
         $transaksi                 = new Transaksi();
         $transaksi->kode_transaksi = $kode;
-        $transaksi->id_kategori   = $request->id_kategori;
+        $transaksi->id_pelanggan   = $request->id_pelanggan;
         $transaksi->tanggal        = now();
         $transaksi->total_harga    = 0;
         $transaksi->save();
@@ -72,23 +72,23 @@ class TransaksiController extends Controller
 
     public function show($id)
     {
-        $transaksi = Transaksi::with(['kategori', 'produks'])->findOrFail($id);
+        $transaksi = Transaksi::with(['pelanggan', 'produks'])->findOrFail($id);
         return view('transaksi.show', compact('transaksi'));
     }
 
     public function edit($id)
     {
         $transaksi = Transaksi::with('produks')->findOrFail($id);
-        $kategori = Kategori::all();
+        $pelanggan = Pelanggan::all();
         $produk    = Produk::all();
 
-        return view('transaksi.edit', compact('transaksi', 'kategori', 'produk'));
+        return view('transaksi.edit', compact('transaksi', 'pelanggan', 'produk'));
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'id_kategori' => 'required|exists:kategoris,id',
+            'id_pelanggan' => 'required|exists:pelanggans,id',
             'id_produk'    => 'required|array',
             'id_produk.*'  => 'exists:produks,id',
             'jumlah'       => 'required|array',
@@ -110,7 +110,7 @@ class TransaksiController extends Controller
         $transaksi->produks()->detach();
 
         // update data transaksi
-        $transaksi->id_kategori = $request->id_kategori;
+        $transaksi->id_pelanggan = $request->id_pelanggan;
         $transaksi->tanggal      = now();
         $transaksi->total_harga  = 0;
         $transaksi->save();
@@ -169,7 +169,7 @@ class TransaksiController extends Controller
     public function search(Request $request)
     {
         $query     = $request->query('query');
-        $transaksi = Transaksi::with('kategori')
+        $transaksi = Transaksi::with('pelanggan')
             ->where('kode_transaksi', 'like', "%$query%")
             ->get();
 

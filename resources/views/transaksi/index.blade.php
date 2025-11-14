@@ -7,18 +7,18 @@
         <a href="{{ route('transaksi.create') }}" class="btn btn-primary">+ Tambah Transaksi</a>
     </div>
 
-    {{--  Notifikasi sukses --}}
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    {{-- Notifikasi sukses --}}
+    @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
     @endif
 
-    {{--  Notifikasi error --}}
-    @if($errors->any())
+    {{-- Notifikasi error --}}
+    @if ($errors->any())
     <div class="alert alert-danger">
         <ul class="mb-0">
-            @foreach ($erros->all() as $err)
+            @foreach ($errors->all() as $err)
             <li>{{ $err }}</li>
             @endforeach
         </ul>
@@ -33,7 +33,7 @@
                     <th>No</th>
                     <th>Kode Transaksi</th>
                     <th>Tanggal</th>
-                    <th>Kategori</th>
+                    <th>Pelanggan</th>
                     <th>Total Harga</th>
                     <th>Aksi</th>
                 </tr>
@@ -43,8 +43,8 @@
                 <tr>
                     <td>{{ $no + 1 }}</td>
                     <td>{{ $trx->kode_transaksi }}</td>
-                    <td>{{ \Carbon\Carbon::parse($trx->tanggal)->format('d M Y') }}</td>
-                    <td>{{ $trx->kategori->nama ?? '-' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($trx->tanggal)->format('d M Y, H:i') }}</td>
+                    <td>{{ $trx->pelanggan->nama ?? '-' }}</td>
                     <td>Rp{{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                     <td>
                         <a href="{{ route('transaksi.show', $trx->id) }}"

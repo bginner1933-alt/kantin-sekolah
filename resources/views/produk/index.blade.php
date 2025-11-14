@@ -40,7 +40,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <a href="{{ route('produk.show', $data->id) }}"
-                                                class="btn btn-sm btn-outline-info">Show</a> |
+                                                class="btn btn-sm btn-outline-dark">Show</a> |
                                             <a href="{{ route('produk.edit', $data->id) }}"
                                                 class="btn btn-sm btn-outline-success">Edit</a> |
                                             <button type="submit" onsubmit="return confirm('Are You Sure ?');"

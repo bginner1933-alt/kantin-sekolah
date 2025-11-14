@@ -7,10 +7,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-start">
-                        Kategori
+                        Pelanggan
                     </div>
                     <div class="float-end">
-                        <a href="{{ route('kategori.create') }}" class="btn btn-sm btn-outline-primary">Tambah Data</a>
+                        <a href="{{ route('pelanggan.create') }}" class="btn btn-sm btn-outline-primary">Tambah Data</a>
                     </div>
                 </div>
 
@@ -20,7 +20,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Kategori</th>
+                                    <th>Nama Pelanggan</th>
                                     <th>Alamat</th>
                                     <th>No Telepon</th>
                                     <th>Aksi</th>
@@ -28,19 +28,19 @@
                             </thead>
                             <tbody>
                                 @php $no = 1; @endphp
-                                @forelse ($kategoris as $data)
+                                @forelse ($pelanggan as $data)
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $data->nama }}</td>
                                     <td>{{ $data->alamat }}</td>
                                     <td>{{ $data->no_telepon }}</td>
                                     <td>
-                                        <form action="{{ route('kategori.destroy', $data->id) }}" method="POST">
+                                        <form action="{{ route('pelanggan.destroy', $data->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a href="{{ route('kategori.show', $data->id) }}"
+                                            <a href="{{ route('pelanggan.show', $data->id) }}"
                                                 class="btn btn-sm btn-outline-dark">Show</a> |
-                                            <a href="{{ route('kategori.edit', $data->id) }}"
+                                            <a href="{{ route('pelanggan.edit', $data->id) }}"
                                                 class="btn btn-sm btn-outline-success">Edit</a> |
                                             <button type="submit" onsubmit="return confirm('Are You Sure ?');"
                                                 class="btn btn-sm btn-outline-danger">Delete</button>

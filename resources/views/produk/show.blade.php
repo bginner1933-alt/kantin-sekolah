@@ -14,6 +14,7 @@
                     @if ($produk->image)
                     <img src="{{ Storage::url($produk->image)  }}" class="w-100 rounded mb-3" alt="{{ $produk->nama }}">
                     @else
+                    <img src="{{ asset('images/no-image.png') }}" class="w-100 rounded mb-3" alt="No Image">
                     @endif
 
                     <h4 class="fw-bold">{{ $produk->nama }}</h4>

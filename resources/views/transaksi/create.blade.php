@@ -21,12 +21,12 @@
             <form action="{{ route('transaksi.store') }}" method="POST">
                 @csrf
 
-                {{-- Pilih kategori --}}
+                {{-- Pilih Pelanggan --}}
                 <div class="mb-3">
-                    <label for="id_kategori" class="form-label">kategori</label>
-                    <select name="id_kategori" id="id_kategori" class="form-select" required>
-                        <option value="">-- Pilih kategori --</option>
-                        @foreach ($kategori as $p)
+                    <label for="id_pelanggan" class="form-label">Pelanggan</label>
+                    <select name="id_pelanggan" id="id_pelanggan" class="form-select" required>
+                        <option value="">-- Pilih Pelanggan --</option>
+                        @foreach ($pelanggan as $p)
                         <option value="{{ $p->id }}">{{ $p->nama }}</option>
                         @endforeach
                     </select>

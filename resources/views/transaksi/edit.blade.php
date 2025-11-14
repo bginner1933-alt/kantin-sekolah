@@ -20,13 +20,13 @@
         @csrf
         @method('PUT')
 
-        {{-- Pilih Kategori --}}
+        {{-- Pilih Pelanggan --}}
         <div class="mb-3">
-            <label for="id_kategori" class="form-label">Kategori</label>
-            <select name="id_kategori" id="id_kategori" class="form-select" required>
-                <option value="">-- Pilih Kategori --</option>
-                @foreach ($kategori as $p)
-                <option value="{{ $p->id }}" {{ $transaksi->id_kategori == $p->id ? 'selected' : '' }}>
+            <label for="id_pelanggan" class="form-label">Pelanggan</label>
+            <select name="id_pelanggan" id="id_pelanggan" class="form-select" required>
+                <option value="">-- Pilih Pelanggan --</option>
+                @foreach ($pelanggan as $p)
+                <option value="{{ $p->id }}" {{ $transaksi->id_pelanggan == $p->id ? 'selected' : '' }}>
                     {{ $p->nama }}
                 </option>
                 @endforeach

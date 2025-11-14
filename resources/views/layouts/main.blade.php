@@ -53,7 +53,7 @@
     <h4 class="text-center mt-3">CRUD App</h4>
     <hr>
     <a href="{{ route('produk.index') }}"><i class="bi bi-box"></i> Produk</a>
-    <a href="{{ route('kategori.index') }}"><i class="bi bi-tags"></i> Kategori</a>
+    <a href="{{ route('pelanggan.index') }}"><i class="bi bi-tags"></i> Kategori</a>
     <a href="{{ route('transaksi.index') }}"><i class="bi bi-cart-check"></i> Transaksi</a>
     <a href="{{ route('produk.index') }}"><i class="bi bi-credit-card"></i> Pembayaran</a>
     <a href="{{ route('transaksi.index') }}"><i class="bi bi-receipt"></i> Detail Transaksi</a>
