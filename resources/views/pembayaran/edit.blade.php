@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <div class="container mt-4">
@@ -33,8 +33,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Nama Pelanggan</label>
-                    <input type="text" class="form-control" value="{{ $pembayaran->transaksi->pelanggan->nama }}" readonly>
+                    <label class="form-label">Nama Kategori</label>
+                    <input type="text" class="form-control" value="{{ $pembayaran->transaksi->kategori->nama }}" readonly>
                 </div>
 
                 <div class="mb-3">

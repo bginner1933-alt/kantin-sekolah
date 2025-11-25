@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.dashboard')
 
 @section('content')
 <div class="container">
@@ -7,14 +7,14 @@
         <a href="{{ route('transaksi.create') }}" class="btn btn-primary">+ Tambah Transaksi</a>
     </div>
 
-    {{-- Notifikasi sukses --}}
+
     @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
     </div>
     @endif
 
-    {{-- Notifikasi error --}}
+
     @if ($errors->any())
     <div class="alert alert-danger">
         <ul class="mb-0">
@@ -25,37 +25,37 @@
     </div>
     @endif
 
-    @if($transaksi->count() > 0)
+    @if($transaksis->count() > 0)
     <div class="table-responsive">
         <table class="table table-bordered align-middle text-center">
             <thead class="table-light">
                 <tr>
                     <th>No</th>
                     <th>Kode Transaksi</th>
+                    <th>Nama Pelanggan</th>
                     <th>Tanggal</th>
-                    <th>Pelanggan</th>
-                    <th>Total Harga</th>
+                    <th>Total</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($transaksi as $no => $trx)
+                @foreach ($transaksis as $no => $trx)
                 <tr>
                     <td>{{ $no + 1 }}</td>
                     <td>{{ $trx->kode_transaksi }}</td>
-                    <td>{{ \Carbon\Carbon::parse($trx->tanggal)->format('d M Y, H:i') }}</td>
-                    <td>{{ $trx->pelanggan->nama ?? '-' }}</td>
+                    <td>{{ $trx->nama_pembeli }}</td>
+                    <td>{{ \Carbon\Carbon::parse($trx->tanggal)->format('d M Y') }}</td>
                     <td>Rp{{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                     <td>
                         <a href="{{ route('transaksi.show', $trx->id) }}"
-                            class="btn btn-outline-warning btn-sm">Show</a>
+                            class="btn btn-info btn-sm">Show</a>
                         <a href="{{ route('transaksi.edit', $trx->id) }}"
-                            class="btn btn-outline-success btn-sm">Edit</a>
+                            class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('transaksi.destroy', $trx->id) }}" method="POST" class="d-inline"
                             onsubmit="return confirm('Yakin mau hapus transaksi ini?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Hapus</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                         </form>
                     </td>
                 </tr>

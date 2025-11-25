@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <div class="container mt-4">
@@ -35,7 +35,7 @@
                         <tr>
                             <th>No</th>
                             <th>Kode Transaksi</th>
-                            <th>Nama Pelanggan</th>
+                            <th>Nama Kategori</th>
                             <th>Tanggal Bayar</th>
                             <th>Metode</th>
                             <th>Jumlah Bayar</th>
@@ -48,7 +48,7 @@
                         <tr>
                             <td>{{ $loop->iteration + ($pembayarans->currentPage() - 1) * $pembayarans->perPage() }}</td>
                             <td>{{ $pembayaran->transaksi->kode_transaksi ?? '-' }}</td>
-                            <td>{{ $pembayaran->transaksi->pelanggan->nama ?? '-' }}</td>
+                            <td>{{ $pembayaran->transaksi->kategori->nama ?? '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($pembayaran->tanggal_bayar)->format('d M Y') }}</td>
                             <td>
                                 <span class="badge bg-{{ $pembayaran->metode_pembayaran == 'cash' ? 'success' : ($pembayaran->metode_pembayaran == 'credit' ? 'warning' : 'info') }}">

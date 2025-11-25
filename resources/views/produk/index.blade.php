@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.dashboard')
 
 @section('content')
 <div class="container">
@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="float-start">
+                    <div>
                         {{ __('produk') }}
                     </div>
                     <div class="float-end">
@@ -15,6 +15,18 @@
                 </div>
 
                 <div class="card-body">
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -23,35 +35,35 @@
                                     <th>Nama Produk</th>
                                     <th>Harga</th>
                                     <th>Stok</th>
-
+                                    <th>Kategori</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $no = 1; @endphp
                                 @forelse ($produk as $data)
                                 <tr>
-                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->nama_produk }}</td>
-                                    <td>{!! $data->harga !!}</td>
-                                    <td>{{ $data->stok}}</td>
+                                    <td>{{ $data->harga }}</td>
+                                    <td>{{ $data->stok }}</td>
+                                    <td>{{ $data->kategori->nama_kategori ?? 'N/A' }}</td>
                                     <td>
                                         <form action="{{ route('produk.destroy', $data->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a href="{{ route('produk.show', $data->id) }}"
-                                                class="btn btn-sm btn-outline-dark">Show</a> |
-                                            <a href="{{ route('produk.edit', $data->id) }}"
-                                                class="btn btn-sm btn-outline-success">Edit</a> |
-                                            <button type="submit" onsubmit="return confirm('Are You Sure ?');"
-                                                class="btn btn-sm btn-outline-danger">Delete</button>
-                                        </form>
+                                        <a href="{{ route('produk.show', $data->id) }}"
+                                            class="btn btn-info btn-sm">Show</a> |
+                                        <a href="{{ route('produk.edit', $data->id) }}"
+                                            class="btn btn-warning btn-sm">Edit</a> |
+                                        <button type="submit" onclick="return confirm('Are You Sure ?');"
+                                            class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
                                     <td colspan="6" class="text-center">
-                                        Data data belum Tersedia.
+                                        Data belum tersedia.
                                     </td>
                                 </tr>
                                 @endforelse

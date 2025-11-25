@@ -3,15 +3,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Produk extends Model
+class produk extends Model
 {
-    protected $fillable = ['nama_produk', 'stok', 'harga'];
-    protected $visible  = ['nama_produk', 'stok', 'harga'];
+    protected $fillable = ['nama_produk', 'harga', 'stok', 'kategori_id'];
+    protected $visible  = ['nama_produk', 'harga', 'stok', 'kategori_id'];
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class);
+    }
 
     public function transaksis()
     {
-        return $this->belongsToMany(Transaksi::class, 'detail_transaksi', 'id_produk', 'id_transaksi')
-                    ->withPivot('jumlah', 'sub_total')
-                    ->withTimestamps();
+
+        return $this->belongsToMany(Transaksi::class, 'detail_transaksi', 'produk_id', 'transaksi_id')
+            ->withPivot('jumlah', 'subtotal')
+            ->withTimestamps();
+
     }
+
 }

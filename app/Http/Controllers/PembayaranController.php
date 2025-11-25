@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class PembayaranController extends Controller
 {
-    // ✅ INDEX
     public function index(Request $request)
     {
         $search = $request->get('search');
@@ -15,7 +14,7 @@ class PembayaranController extends Controller
         $pembayarans = Pembayaran::with('transaksi')
             ->when($search, function ($query) use ($search) {
                 $query->whereHas('transaksi', function ($q) use ($search) {
-                    $q->where('kode', 'like', "%$search%");
+                    $q->where('kode_transaksi', 'like', "%$search%");
                 });
             })
             ->latest()
@@ -24,7 +23,7 @@ class PembayaranController extends Controller
         return view('pembayaran.index', compact('pembayarans', 'search'));
     }
 
-    // ✅ CARI TRANSAKSI SEBELUM BAYAR
+    // CARI TRANSAKSI SEBELUM BAYAR
     public function searchTransaksi(Request $request)
     {
         $kode      = $request->get('kode');
@@ -37,13 +36,11 @@ class PembayaranController extends Controller
         return response()->json($transaksi);
     }
 
-    // ✅ CREATE
     public function create()
     {
         return view('pembayaran.create');
     }
 
-    // ✅ STORE
     public function store(Request $request)
     {
         $request->validate([
@@ -68,17 +65,15 @@ class PembayaranController extends Controller
         return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil disimpan!');
     }
 
-    // ✅ SHOW
     public function show($id)
     {
-        $pembayaran = Pembayaran::with('transaksi.pelanggan')->findOrFail($id);
+        $pembayaran = Pembayaran::with('transaksi.kategori')->findOrFail($id);
         return view('pembayaran.show', compact('pembayaran'));
     }
 
-    // ✅ EDIT
     public function edit($id)
     {
-        $pembayaran = Pembayaran::with(['transaksi.pelanggan'])->findOrFail($id);
+        $pembayaran = Pembayaran::with(['transaksi.kategori'])->findOrFail($id);
         return view('pembayaran.edit', compact('pembayaran'));
     }
 
@@ -107,7 +102,6 @@ class PembayaranController extends Controller
         return redirect()->route('pembayaran.index')->with('success', 'Data pembayaran berhasil diperbarui!');
     }
 
-    // ✅ DESTROY
     public function destroy($id)
     {
         $pembayaran = Pembayaran::findOrFail($id);

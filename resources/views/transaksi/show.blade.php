@@ -1,4 +1,4 @@
-    @extends('layouts.main')
+@extends('layouts.dashboard')
 
 @section('content')
 <div class="container mt-4">
@@ -10,7 +10,7 @@
 
         <div class="card-body">
 
-            {{-- Informasi Transaksi --}}
+
             <h6 class="fw-bold mb-3">Informasi Transaksi</h6>
             <table class="table table-sm table-bordered mb-4">
                 <tr>
@@ -22,16 +22,11 @@
                     <td>{{ \Carbon\Carbon::parse($transaksi->tanggal)->format('d M Y H:i') }}</td>
                 </tr>
                 <tr>
-                    <th>Pelanggan</th>
-                    <td>{{ $transaksi->pelanggan->nama ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <th>Total Harga</th>
+                    <th>Total</th>
                     <td>Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                 </tr>
             </table>
 
-            {{-- Detail Produk --}}
             <h6 class="fw-bold mb-3">Detail Produk</h6>
             <table class="table table-striped table-bordered">
                 <thead class="table-light">
@@ -50,7 +45,7 @@
                         <td>{{ $prod->nama_produk }}</td>
                         <td>Rp {{ number_format($prod->harga, 0, ',', '.') }}</td>
                         <td>{{ $prod->pivot->jumlah }}</td>
-                        <td>Rp {{ number_format($prod->pivot->sub_total, 0, ',', '.') }}</td>
+                        <td>Rp {{ number_format($prod->pivot->subtotal, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

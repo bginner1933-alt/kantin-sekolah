@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <div class="container mt-4">
@@ -74,16 +74,16 @@
                 </tbody>
             </table>
 
-            {{-- Informasi Pelanggan --}}
-            <h5 class="mt-4 mb-3">Informasi Pelanggan</h5>
+            {{-- Informasi Kategori --}}
+            <h5 class="mt-4 mb-3">Informasi Kategori</h5>
             <table class="table table-bordered">
                 <tr>
-                    <th>Nama Pelanggan</th>
-                    <td>{{ $pembayaran->transaksi->pelanggan->nama }}</td>
+                    <th>Nama Kategori</th>
+                    <td>{{ $pembayaran->transaksi->kategori->nama }}</td>
                 </tr>
                 <tr>
                     <th>Alamat</th>
-                    <td>{{ $pembayaran->transaksi->pelanggan->alamat }}</td>
+                    <td>{{ $pembayaran->transaksi->kategori->alamat }}</td>
                 </tr>
             </table>
 
