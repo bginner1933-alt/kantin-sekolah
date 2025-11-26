@@ -6,25 +6,51 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4>Tambah Kategori Produk</h4>
+                    <div class="float-start">
+                        Tambah Produk
+                    </div>
+                    <div class="float-end">
+                        <a href="{{ route('kategori.index') }}" class="btn btn-sm btn-outline-primary">Kembali</a>
+                    </div>
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('kategori.store') }}" method="POST">
+                    <form action="{{ route('kategori.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-
-                        <div class="form-group">
-                            <label for="nama_kategori">Nama Kategori</label>
-                            <input type="text" class="form-control @error('nama_kategori') is-invalid @enderror" id="nama_kategori" name="nama_kategori" value="{{ old('nama_kategori') }}" required>
-                            @error('nama_kategori')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Kategori</label>
+                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
+                                value="{{ old('nama') }}" placeholder="Nama Kategori" required>
+                            @error('nama')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">No Telepon</label>
+                            <input type="number" class="form-control @error('no_telepon') is-invalid @enderror"
+                                name="no_telepon" value="{{ old('no_telepon') }}" placeholder="no_telepon" required>
+                            @error('no_telepon')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">alamat</label>
+                            <textarea class="form-control @error('alamat') is-invalid @enderror" name="alamat" rows="3"
+                                placeholder="alamat" required>{{ old('alamat') }}</textarea>
+                            @error('alamat')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
                             @enderror
                         </div>
 
-                        <div class="form-group mt-3">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                            <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Kembali</a>
-                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                        <button type="reset" class="btn btn-sm btn-warning">Reset</button>
+
                     </form>
                 </div>
             </div>

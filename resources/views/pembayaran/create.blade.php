@@ -106,7 +106,7 @@
                 return;
             }
 
-            fetch(`/latihan/transaksi/search?query=${query}`)
+            fetch(`/transaksi/search?query=${query}`)
                 .then(res => res.json())
                 .then(data => {
                     searchResult.innerHTML = '';

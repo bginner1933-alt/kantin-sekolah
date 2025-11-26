@@ -58,17 +58,17 @@
                             <td>Rp {{ number_format($pembayaran->jumlah_bayar, 0, ',', '.') }}</td>
                             <td>Rp {{ number_format($pembayaran->kembalian, 0, ',', '.') }}</td>
                             <td class="text-center">
-                                <a href="{{ route('pembayaran.show', $pembayaran->id) }}" class="btn btn-sm btn-info text-white">
+                                <a href="{{ route('pembayaran.show', $pembayaran->id) }}" class="btn btn-sm btn-info">
                                     Show
                                 </a>
-                                <a href="{{ route('pembayaran.edit', $pembayaran->id) }}" class="btn btn-sm btn-warning text-white">
+                                <a href="{{ route('pembayaran.edit', $pembayaran->id) }}" class="btn btn-sm btn-warning">
                                     Edit
                                 </a>
                                 <form action="{{ route('pembayaran.destroy', $pembayaran->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger">
-                                        Hapus
+                                        Delete
                                     </button>
                                 </form>
                             </td>

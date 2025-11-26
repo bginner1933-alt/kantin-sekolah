@@ -1,160 +1,180 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Transaksi;
+use App\Models\Kategori;
 use App\Models\Produk;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
     public function index()
     {
-        $transaksis = Transaksi::with('produks')->paginate(10);
-        return view('transaksi.index', compact('transaksis'));
+        $transaksi = Transaksi::with(['kategori', 'produks'])->latest()->get();
+        return view('transaksi.index', compact('transaksi'));
     }
 
     public function create()
     {
-        $produks = Produk::all();
-        return view('transaksi.create', compact('produks'));
+        $kategori = Kategori::all();
+        $produk    = Produk::all();
+        return view('transaksi.create', compact('kategori', 'produk'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_pembeli' => 'required|string|max:255',
-            'produk' => 'required|array',
-            'produk.*' => 'exists:produks,id',
-            'jumlah' => 'required|array',
-            'jumlah.*' => 'integer|min:1',
+        $validated = $request->validate([
+            'id_kategori' => 'required|exists:kategoris,id',
+            'id_produk'    => 'required|array',
+            'id_produk.*'  => 'exists:produks,id',
+            'jumlah'       => 'required|array',
+            'jumlah.*'     => 'integer|min:1',
         ]);
 
-        DB::beginTransaction();
+        // Buat transaksi utama dulu
+        $kode                      = 'TRX-' . strtoupper(uniqid());
+        $transaksi                 = new Transaksi();
+        $transaksi->kode_transaksi = $kode;
+        $transaksi->id_kategori   = $request->id_kategori;
+        $transaksi->tanggal        = now();
+        $transaksi->total_harga    = 0;
+        $transaksi->save();
 
-        try {
-            $total_harga = 0;
+        $totalHarga  = 0;
+        $produkPivot = [];
 
-            // Generate kode_transaksi, e.g., TRX + timestamp
-            $kode_transaksi = 'TRX' . time();
+        foreach ($request->id_produk as $index => $produkId) {
+            $produk   = Produk::findOrFail($produkId);
+            $jumlah   = $request->jumlah[$index];
+            $subTotal = $produk->harga * $jumlah;
 
-            // Set tanggal to now
-            $tanggal = now();
+            // isi array untuk attach pivot
+            $produkPivot[$produkId] = [
+                'jumlah'    => $jumlah,
+                'sub_total' => $subTotal,
+            ];
 
-            $transaksi = Transaksi::create([
-                'kode_transaksi' => $kode_transaksi,
-                'tanggal' => $tanggal,
-                'nama_pembeli' => $request->nama_pembeli,
-                'total_harga' => 0, // temporarily 0, update later
-            ]);
+            // kurangi stok
+            $produk->stok -= $jumlah;
+            $produk->save();
 
-            $produkData = [];
-            foreach ($request->produk as $key => $produk_id) {
-                $produk = Produk::findOrFail($produk_id);
-                $jumlah = $request->jumlah[$key];
-                $subtotal = $produk->harga * $jumlah;
-                $total_harga += $subtotal;
-
-                $produkData[$produk_id] = [
-                    'jumlah' => $jumlah,
-                    'subtotal' => $subtotal,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-
-            $transaksi->produks()->attach($produkData);
-
-            $transaksi->total_harga = $total_harga;
-            $transaksi->save();
-
-            DB::commit();
-
-            return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dibuat.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors('Gagal menyimpan transaksi: ' . $e->getMessage())->withInput();
+            $totalHarga += $subTotal;
         }
+
+        // simpan relasi produk ke transaksi (many-to-many)
+        $transaksi->produks()->attach($produkPivot);
+
+        // update total harga transaksi
+        $transaksi->update(['total_harga' => $totalHarga]);
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil disimpan!');
     }
 
     public function show($id)
     {
-        $transaksi = Transaksi::with('produks')->findOrFail($id);
+        $transaksi = Transaksi::with(['kategori', 'produks'])->findOrFail($id);
         return view('transaksi.show', compact('transaksi'));
     }
 
     public function edit($id)
     {
         $transaksi = Transaksi::with('produks')->findOrFail($id);
-        $produks = Produk::all();
-        return view('transaksi.edit', compact('transaksi', 'produks'));
+        $kategori = Kategori::all();
+        $produk    = Produk::all();
+
+        return view('transaksi.edit', compact('transaksi', 'kategori', 'produk'));
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_pembeli' => 'required|string|max:255',
-            'produk' => 'required|array',
-            'produk.*' => 'exists:produks,id',
-            'jumlah' => 'required|array',
-            'jumlah.*' => 'integer|min:1',
+        $validated = $request->validate([
+            'id_kategori' => 'required|exists:kategoris,id',
+            'id_produk'    => 'required|array',
+            'id_produk.*'  => 'exists:produks,id',
+            'jumlah'       => 'required|array',
+            'jumlah.*'     => 'integer|min:1',
         ]);
 
-        DB::beginTransaction();
+        $transaksi = Transaksi::with('produks')->findOrFail($id);
 
-        try {
-            $transaksi = Transaksi::findOrFail($id);
-            $transaksi->nama_pembeli = $request->nama_pembeli;
-
-            $total_harga = 0;
-            $produkData = [];
-            foreach ($request->produk as $key => $produk_id) {
-                $produk = Produk::findOrFail($produk_id);
-                $jumlah = $request->jumlah[$key];
-                $subtotal = $produk->harga * $jumlah;
-                $total_harga += $subtotal;
-
-                $produkData[$produk_id] = [
-                    'jumlah' => $jumlah,
-                    'subtotal' => $subtotal,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+        // Kembalikan stok produk lama
+        foreach ($transaksi->produks as $oldProduk) {
+            $p = Produk::find($oldProduk->id);
+            if ($p) {
+                $p->stok += $oldProduk->pivot->jumlah;
+                $p->save();
             }
-
-            $transaksi->produks()->sync($produkData);
-
-            $transaksi->total_harga = $total_harga;
-            $transaksi->save();
-
-            DB::commit();
-
-            return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors('Gagal memperbarui transaksi: ' . $e->getMessage())->withInput();
         }
+
+        // kosongkan pivot lama
+        $transaksi->produks()->detach();
+
+        // update data transaksi
+        $transaksi->id_kategori = $request->id_kategori;
+        $transaksi->tanggal      = now();
+        $transaksi->total_harga  = 0;
+        $transaksi->save();
+
+        $totalHarga  = 0;
+        $produkPivot = [];
+
+        foreach ($request->id_produk as $index => $produkId) {
+            $produk   = Produk::findOrFail($produkId);
+            $jumlah   = $request->jumlah[$index];
+            $subTotal = $produk->harga * $jumlah;
+
+            $produkPivot[$produkId] = [
+                'jumlah'    => $jumlah,
+                'sub_total' => $subTotal,
+            ];
+
+            // kurangi stok baru
+            $produk->stok -= $jumlah;
+            $produk->save();
+
+            $totalHarga += $subTotal;
+        }
+
+        // simpan relasi pivot baru
+        $transaksi->produks()->attach($produkPivot);
+
+        // update total harga
+        $transaksi->update(['total_harga' => $totalHarga]);
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        $transaksi = Transaksi::findOrFail($id);
+        $transaksi = Transaksi::with('produks')->findOrFail($id);
+
+        // Kembalikan stok produk
+        foreach ($transaksi->produks as $produk) {
+            $p = Produk::find($produk->id);
+            if ($p) {
+                $p->stok += $produk->pivot->jumlah;
+                $p->save();
+            }
+        }
+
+        // Hapus relasi pivot
         $transaksi->produks()->detach();
+
+        // Hapus transaksi utama
+        $transaksi = Transaksi::findOrFail($id);
         $transaksi->delete();
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus dan stok dikembalikan!');
     }
 
     public function search(Request $request)
     {
-        $keyword = $request->get('keyword');
-        $transaksis = Transaksi::where('nama_pembeli', 'like', "%$keyword%")
-            ->orWhereHas('produks', function ($query) use ($keyword) {
-                $query->where('nama_produk', 'like', "%$keyword%");
-            })
-            ->paginate(10);
+        $query     = $request->query('query');
+        $transaksi = Transaksi::with('kategori')
+            ->where('kode_transaksi', 'like', "%$query%")
+            ->get();
 
-        return view('transaksi.index', compact('transaksis'));
+        return response()->json($transaksi);
     }
+
 }

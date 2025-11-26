@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\Kategori;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 
@@ -10,32 +9,36 @@ class ProdukController extends Controller
 
     public function index()
     {
-        $produk = Produk::with('kategori')->latest()->paginate(5);
+        $produk = Produk::latest()->paginate(5);
         return view('produk.index', compact('produk'));
     }
 
     public function create()
     {
-        $kategoris = Kategori::all();
-        return view('produk.create', compact('kategoris'));
+        return view('produk.create');
     }
 
     public function store(Request $request)
     {
         //validate form
         $validated = $request->validate([
+            'nama_produk' => 'required|min:5',
             'harga'       => 'required',
-            'stok'        => 'required|integer',
-            'kategori_id' => 'required|exists:kategoris,id',
+            'stok'        => 'required|',
         ]);
 
-        $kategori = Kategori::findOrFail($request->kategori_id);
-
         $produk              = new Produk();
-        $produk->nama_produk = $kategori->nama_kategori;
+        $produk->nama_produk = $request->nama_produk;
         $produk->harga       = $request->harga;
         $produk->stok        = $request->stok;
-        $produk->kategori_id = $request->kategori_id;
+        // upload image
+        // if ($request->hasFile('image')) {
+        //     $file       = $request->file('image');
+        //     $randomName = Str::random(20) . '.' . $file->getClientOriginalExtension();
+        //     $path       = $file->storeAs('produks', $randomName, 'public');
+        //     // memasukan nama_produk image nya ke database
+        //     $produk->image = $path;
+        // }
 
         $produk->save();
         return redirect()->route('produk.index');
@@ -49,26 +52,33 @@ class ProdukController extends Controller
 
     public function edit($id)
     {
-        $produk    = Produk::findOrFail($id);
-        $kategoris = Kategori::all();
-        return view('produk.edit', compact('produk', 'kategoris'));
+        $produk = Produk::findOrFail($id);
+        return view('produk.edit', compact('produk'));
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'nama'        => 'required|min:5',
+            'nama_produk' => 'required|min:5',
             'harga'       => 'required',
-            'stok'        => 'required|integer',
-            'kategori_id' => 'required|exists:kategoris,id',
+            'stok'        => 'required|',
         ]);
 
         $produk              = Produk::findOrFail($id);
-        $produk->nama_produk = $request->nama;
+        $produk->nama_produk = $request->nama_produk;
         $produk->harga       = $request->harga;
         $produk->stok        = $request->stok;
-        $produk->kategori_id = $request->kategori_id;
+        // if ($request->hasFile('image')) {
+        //     // menghapus foto lama
+        //     Storage::disk('public')->delete($produk->image);
 
+        //     // upload foto baru
+        //     $file       = $request->file('image');
+        //     $randomName = Str::random(20) . '.' . $file->getClientOriginalExtension();
+        //     $path       = $file->storeAs('produks', $randomName, 'public');
+        //     // memasukan nama_produk image nya ke database
+        //     $produk->image = $path;
+        // }
         $produk->save();
         return redirect()->route('produk.index');
 
@@ -77,14 +87,9 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
-
-        // Check if produk has associated transaksis
-        if ($produk->transaksis()->count() > 0) {
-            return redirect()->route('produk.index')->with('error', 'Tidak dapat menghapus produk karena masih memiliki transaksi terkait.');
-        }
-
         // Storage::disk('public')->delete($produk->image);
         $produk->delete();
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus.');
+        return redirect()->route('produk.index');
+
     }
 }

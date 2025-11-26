@@ -4,6 +4,7 @@
 <div class="container">
     <h3 class="mb-4">Tambah Transaksi Baru</h3>
 
+    {{-- Notifikasi Error --}}
     @if ($errors->any())
     <div class="alert alert-danger">
         <strong>Terjadi kesalahan:</strong>
@@ -20,25 +21,29 @@
             <form action="{{ route('transaksi.store') }}" method="POST">
                 @csrf
 
+                {{-- Pilih Kategori --}}
                 <div class="mb-3">
-                    <label for="nama_pembeli" class="form-label">Nama Pembeli</label>
-                    <input type="text" class="form-control @error('nama_pembeli') is-invalid @enderror" id="nama_pembeli" name="nama_pembeli" value="{{ old('nama_pembeli') }}" required>
-                    @error('nama_pembeli')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <label for="id_kategori" class="form-label">Kategori</label>
+                    <select name="id_kategori" id="id_kategori" class="form-select" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach ($kategori as $p)
+                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <hr>
 
                 <h5>Daftar Produk</h5>
 
+                {{-- Wrapper Produk --}}
                 <div id="produk-wrapper">
                     <div class="row produk-item mb-3">
                         <div class="col-md-5">
                             <label class="form-label">Produk</label>
-<select name="produk[]" class="form-select produk-select" required>
+                            <select name="id_produk[]" class="form-select produk-select" required>
                                 <option value="">-- Pilih Produk --</option>
-                                @foreach ($produks as $prod)
+                                @foreach ($produk as $prod)
                                 <option value="{{ $prod->id }}" data-harga="{{ $prod->harga }}">
                                     {{ $prod->nama_produk }} - Rp{{ number_format($prod->harga, 0, ',', '.') }}
                                 </option>
@@ -67,7 +72,7 @@
                 </div>
 
                 <div class="text-end mb-4">
-                    <h5>Total: <span id="totalHarga">Rp0</span></h5>
+                    <h5>Total Harga: <span id="totalHarga">Rp0</span></h5>
                 </div>
 
                 <div class="text-end">
@@ -78,6 +83,7 @@
     </div>
 </div>
 
+{{-- Script JS --}}
 <script>
     function hitungSubtotal() {
         let total = 0;
@@ -99,6 +105,7 @@
     document.addEventListener('input', hitungSubtotal);
     document.addEventListener('change', hitungSubtotal);
 
+    // Tambah produk baru
     document.getElementById('btn-add').addEventListener('click', function() {
         let wrapper = document.getElementById('produk-wrapper');
         let newRow = wrapper.firstElementChild.cloneNode(true);
@@ -109,6 +116,7 @@
         wrapper.appendChild(newRow);
     });
 
+    // Hapus produk
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('btn-remove')) {
             let items = document.querySelectorAll('.produk-item');

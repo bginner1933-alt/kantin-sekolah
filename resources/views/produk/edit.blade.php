@@ -21,10 +21,10 @@
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">Nama Produk</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror"
-                                name="nama" value="{{ $produk->nama_produk }}" placeholder="produk Name"
+                            <input type="text" class="form-control @error('nama_produk') is-invalid @enderror"
+                                name="nama_produk" value="{{ $produk->nama_produk }}" placeholder="produk Name"
                                 required>
-                            @error('nama')
+                            @error('nama_produk')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -52,20 +52,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Kategori Produk</label>
-                            <select class="form-control @error('kategori_id') is-invalid @enderror" name="kategori_id" required>
-                                <option value="">Pilih Kategori</option>
-                                @foreach($kategoris as $kategori)
-                                    <option value="{{ $kategori->id }}" {{ $produk->kategori_id == $kategori->id ? 'selected' : '' }}>{{ $kategori->nama_kategori }}</option>
-                                @endforeach
-                            </select>
-                            @error('kategori_id')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
+
 
                         <button type="submit" class="btn btn-sm btn-primary">SIMPAN</button>
                         <button type="reset" class="btn btn-sm btn-warning">RESET</button>

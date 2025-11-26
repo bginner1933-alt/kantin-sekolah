@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pembayarans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_transaksi')->constrained('transaksis', 'id');
+            $table->foreignId('id_transaksi')->constrained('transaksis');
             $table->date('tanggal_bayar');
             $table->enum('metode_pembayaran', ['cash', 'credit', 'debit']);
             $table->integer('jumlah_bayar');
