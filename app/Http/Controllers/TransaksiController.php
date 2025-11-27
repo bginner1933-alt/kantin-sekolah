@@ -5,6 +5,8 @@ use App\Models\Kategori;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use App\Models\Pembayaran;
+
 
 class TransaksiController extends Controller
 {
@@ -145,27 +147,36 @@ class TransaksiController extends Controller
     }
 
     public function destroy($id)
-    {
-        $transaksi = Transaksi::with('produks')->findOrFail($id);
+{
+    // Temukan transaksi dengan data terkait
+    $transaksi = Transaksi::with('produks')->findOrFail($id);
 
-        // Kembalikan stok produk
-        foreach ($transaksi->produks as $produk) {
-            $p = Produk::find($produk->id);
-            if ($p) {
-                $p->stok += $produk->pivot->jumlah;
-                $p->save();
-            }
-        }
+    // Cek jika ada record Pembayaran terkait
+    $pembayaran = Pembayaran::where('id_transaksi', $transaksi->id)->first();
 
-        // Hapus relasi pivot
-        $transaksi->produks()->detach();
-
-        // Hapus transaksi utama
-        $transaksi = Transaksi::findOrFail($id);
-        $transaksi->delete();
-
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus dan stok dikembalikan!');
+    // Jika ada, hapus record Pembayaran tersebut
+    if ($pembayaran) {
+        $pembayaran->delete();
     }
+
+    // Kembalikan stok produk yang terkait dengan transaksi
+    foreach ($transaksi->produks as $produk) {
+        $p = Produk::find($produk->id);
+        if ($p) {
+            $p->stok += $produk->pivot->jumlah;
+            $p->save();
+        }
+    }
+
+    // Hapus relasi produk dari transaksi
+    $transaksi->produks()->detach();
+
+    // Hapus transaksi utama
+    $transaksi->delete();
+
+    return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus dan stok dikembalikan!');
+}
+
 
     public function search(Request $request)
     {

@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use App\Models\Transaksi;
 
 class KategoriController extends Controller
 {
@@ -73,10 +74,19 @@ class KategoriController extends Controller
         return redirect()->route('kategori.index');
     }
 
-    public function destroy(string $id)
-    {
-        $kategori = Kategori::findOrFail($id);
-        $kategori->delete();
-        return redirect()->route('kategori.index');
+   public function destroy($id)
+{
+    // Check if there are any related transaksis records
+    $transaksis = Transaksi::where('id_kategori', $id)->count();
+
+    if ($transaksis > 0) {
+        return redirect()->route('kategori.index')->with('error', 'Cannot delete category because it has related transactions.');
     }
+
+    // Proceed to delete the category if no related transaksis
+    Kategori::destroy($id);
+
+    return redirect()->route('kategori.index')->with('success', 'Category deleted successfully.');
+}
+
 }
