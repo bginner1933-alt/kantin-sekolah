@@ -30,6 +30,6 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('pembayaran', PembayaranController::class);
 });
 
-Route::get('tempelate', function() {
+Route::get('admin', function() {
     return view('layouts.dashboard');
-});
+})->name('admin');

@@ -70,7 +70,7 @@
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
 
-        
+
         <!-- Menu -->
         @extends('includes.sidebar')
         <!-- /End Menu -->
@@ -78,7 +78,7 @@
         <!-- Layout container -->
         <div class="layout-page">
           <!-- Navbar -->
-
+            @include('includes.navbar')
           <!-- /End Navbar -->
 
           <!-- Content wrapper -->

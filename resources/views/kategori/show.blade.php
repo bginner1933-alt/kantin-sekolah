@@ -4,33 +4,24 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>{{ __('Detail Produk') }}</span>
-                    <a href="{{ route('kategori.index') }}" class="btn btn-sm btn-outline-primary">Kembali</a>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Detail Kategori Produk</h4>
                 </div>
 
                 <div class="card-body">
-                    @if ($kategori->image)
-                        <img src="{{ Storage::url($kategori->image) }}" class="w-100 rounded mb-3" alt="{{ $kategori->nama }}">
-                    @else
-                        <p class="mt-2 mb-1">Nama Kategori: <strong>{{ ($kategori->nama) }}</strong></p>
-                        <p class="mt-2">{!! $kategori->deskripsi !!}</p>
-                    @endif
-                    @if ($kategori->image)
-                        <img src="{{ Storage::url($kategori->image) }}" class="w-100 rounded mb-3" alt="{{ $kategori->nama }}">
-                    @else
-                        <p class="mt-2 mb-1">Nama Alamat: <strong>{{ ($kategori->alamat) }}</strong></p>
-                        <p class="mt-2">{!! $kategori->deskripsi !!}</p>
-                    @endif
-                    @if ($kategori->image)
-                        <img src="{{ Storage::url($kategori->image) }}" class="w-100 rounded mb-3" alt="{{ $kategori->nama }}">
-                    @else
-                        <p class="mt-2 mb-1">No Telepon: <strong>{{ ($kategori->no_telepon) }}</strong></p>
-                        <p class="mt-2">{!! $kategori->deskripsi !!}</p>
-                    @endif
-                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Nama Kategori:</strong>
+                            <p>{{ $kategori->nama_kategori }}</p>
+                        </div>
+                    </div>
 
+                    <div class="mt-3">
+                        <a href="{{ route('kategori.edit', $kategori->id) }}" class="btn btn-warning">Edit</a>
+                        <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Kembali</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

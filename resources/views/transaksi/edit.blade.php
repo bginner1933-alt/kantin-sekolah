@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h3 class="mb-4">Edit Transaksi #{{ $transaksi->kode_transaksi }}</h3>
+
 
     {{-- Notifikasi Error --}}
     @if ($errors->any())
@@ -27,7 +27,7 @@
                 <option value="">-- Pilih Kategori --</option>
                 @foreach ($kategori as $p)
                 <option value="{{ $p->id }}" {{ $transaksi->id_kategori == $p->id ? 'selected' : '' }}>
-                    {{ $p->nama }}
+                    {{ $p->nama_kategori }}
                 </option>
                 @endforeach
             </select>

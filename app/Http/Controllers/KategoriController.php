@@ -3,17 +3,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
-use App\Models\Transaksi;
 
 class KategoriController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $kategori = Kategori::all();
-        return view('kategori.index', compact('kategori'));
+        $kategoris = Kategori::latest()->paginate(5);
+        return view('kategori.index', compact('kategoris'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         return view('kategori.create');
@@ -24,21 +28,20 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
+        //validate form
         $validated = $request->validate([
-            'nama'       => 'required',
-            'alamat'     => 'required',
-            'no_telepon' => 'required',
+            'nama_kategori' => 'required|min:3',
         ]);
 
-        $kategori             = new Kategori();
-        $kategori->nama       = $request->nama;
-        $kategori->alamat     = $request->alamat;
-        $kategori->no_telepon = $request->no_telepon;
+        $kategori                = new Kategori();
+        $kategori->nama_kategori = $request->nama_kategori;
         $kategori->save();
-
         return redirect()->route('kategori.index');
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(string $id)
     {
         $kategori = Kategori::findOrFail($id);
@@ -60,33 +63,25 @@ class KategoriController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'nama'       => 'required',
-            'alamat'     => 'required',
-            'no_telepon' => 'required',
+            'nama_kategori' => 'required|min:3',
         ]);
 
-        $kategori             = Kategori::findOrFail($id);
-        $kategori->nama       = $request->nama;
-        $kategori->alamat     = $request->alamat;
-        $kategori->no_telepon = $request->no_telepon;
+        $kategori                = Kategori::findOrFail($id);
+        $kategori->nama_kategori = $request->nama_kategori;
         $kategori->save();
-
         return redirect()->route('kategori.index');
     }
 
-   public function destroy($id)
-{
-    // Check if there are any related transaksis records
-    $transaksis = Transaksi::where('id_kategori', $id)->count();
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $kategori = Kategori::findOrFail($id);
 
-    if ($transaksis > 0) {
-        return redirect()->route('kategori.index')->with('error', 'Cannot delete category because it has related transactions.');
+        
+
+        $kategori->delete();
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
     }
-
-    // Proceed to delete the category if no related transaksis
-    Kategori::destroy($id);
-
-    return redirect()->route('kategori.index')->with('success', 'Category deleted successfully.');
-}
-
 }

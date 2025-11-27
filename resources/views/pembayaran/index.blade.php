@@ -48,7 +48,7 @@
                         <tr>
                             <td>{{ $loop->iteration + ($pembayarans->currentPage() - 1) * $pembayarans->perPage() }}</td>
                             <td>{{ $pembayaran->transaksi->kode_transaksi ?? '-' }}</td>
-                            <td>{{ $pembayaran->transaksi->kategori->nama ?? '-' }}</td>
+                            <td>{{ $pembayaran->transaksi->kategori->nama_kategori ?? '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($pembayaran->tanggal_bayar)->format('d M Y') }}</td>
                             <td>
                                 <span class="badge bg-{{ $pembayaran->metode_pembayaran == 'cash' ? 'success' : ($pembayaran->metode_pembayaran == 'credit' ? 'warning' : 'info') }}">

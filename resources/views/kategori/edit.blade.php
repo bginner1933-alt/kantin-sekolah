@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -6,52 +6,26 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <div class="float-start">
-                        Edit Kategori
-                    </div>
-                    <div class="float-end">
-                        <a href="{{ route('kategori.index') }}" class="btn btn-sm btn-outline-primary">Kembali</a>
-                    </div>
+                    <h4>Edit Kategori Produk</h4>
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('kategori.update', $kategori->id) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @method('put')
+                    <form action="{{ route('kategori.update', $kategori->id) }}" method="POST">
                         @csrf
-                        <div class="mb-3">
-                            <label class="form-label">Nama Kategori</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
-                                value="{{ $kategori->nama }}" placeholder="produk Name" required>
-                            @error('nama')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                        @method('PUT')
+
+                        <div class="form-group">
+                            <label for="nama_kategori">Nama Kategori</label>
+                            <input type="text" class="form-control @error('nama_kategori') is-invalid @enderror" id="nama_kategori" name="nama_kategori" value="{{ old('nama_kategori', $kategori->nama_kategori) }}" required>
+                            @error('nama_kategori')
+                                <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">No Telepon</label>
-                            <input type="number" class="form-control @error('no_telepon') is-invalid @enderror"
-                                name="no_telepon" value="{{ $kategori->no_telepon }}" placeholder="No Telepon"
-                                required>
-                            @error('no_telepon')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
+
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Kembali</a>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">alamat</label>
-                            <textarea class="form-control @error('alamat') is-invalid @enderror" name="alamat" rows="3"
-                                placeholder="alamat" required>{{ $kategori->alamat }}</textarea>
-                            @error('alamat')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                        <button type="submit" class="btn btn-sm btn-primary">SIMPAN</button>
-                        <button type="reset" class="btn btn-sm btn-warning">RESET</button>
                     </form>
                 </div>
             </div>

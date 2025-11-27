@@ -44,7 +44,7 @@
                     <td>{{ $no + 1 }}</td>
                     <td>{{ $trx->kode_transaksi }}</td>
                     <td>{{ \Carbon\Carbon::parse($trx->tanggal)->format('d M Y') }}</td>
-                    <td>{{ $trx->kategori->nama ?? '-' }}</td>
+                    <td>{{ $trx->kategori->nama_kategori ?? '-' }}</td>
                     <td>Rp{{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                     <td>
                         <a href="{{ route('transaksi.show', $trx->id) }}"

@@ -1,5 +1,7 @@
 <?php
 
+// app/database/migrations/xxxx_xx_xx_create_produks_table.php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,6 +18,7 @@ return new class extends Migration
             $table->string('nama_produk');
             $table->integer('harga');
             $table->string('stok');
+            $table->foreignId('kategori_id')->constrained()->onDelete('cascade'); // Menambahkan kolom kategori_id dengan relasi ke tabel kategori
             $table->timestamps();
         });
     }
@@ -28,3 +31,4 @@ return new class extends Migration
         Schema::dropIfExists('produks');
     }
 };
+

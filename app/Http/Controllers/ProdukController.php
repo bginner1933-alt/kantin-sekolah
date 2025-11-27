@@ -2,47 +2,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Models\Kategori; // Jangan lupa import model Kategori
 use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
+    // Di Controller ProdukController.php
+public function index()
+{
+    $produk = Produk::latest()->paginate(10);  // Menggunakan paginate() bukan all()
+    return view('produk.index', compact('produk'));
+}
 
-    public function index()
-    {
-        $produk = Produk::latest()->paginate(5);
-        return view('produk.index', compact('produk'));
-    }
 
     public function create()
     {
-        return view('produk.create');
+        // Ambil data kategori dari model Kategori
+        $kategoris = Kategori::all();
+
+        // Kirim data kategori ke view produk.create
+        return view('produk.create', compact('kategoris'));
     }
 
     public function store(Request $request)
-    {
-        //validate form
-        $validated = $request->validate([
-            'nama_produk' => 'required|min:5',
-            'harga'       => 'required',
-            'stok'        => 'required|',
-        ]);
+{
+    // Validasi form
+    $validated = $request->validate([
+        'nama_produk' => 'required|min:5',
+        'harga'       => 'required',
+        'stok'        => 'required',
+        'kategori_id' => 'required|exists:kategoris,id', // Pastikan kategori_id ada di tabel kategoris
+    ]);
 
-        $produk              = new Produk();
-        $produk->nama_produk = $request->nama_produk;
-        $produk->harga       = $request->harga;
-        $produk->stok        = $request->stok;
-        // upload image
-        // if ($request->hasFile('image')) {
-        //     $file       = $request->file('image');
-        //     $randomName = Str::random(20) . '.' . $file->getClientOriginalExtension();
-        //     $path       = $file->storeAs('produks', $randomName, 'public');
-        //     // memasukan nama_produk image nya ke database
-        //     $produk->image = $path;
-        // }
+    // Simpan data produk
+    $produk              = new Produk();
+    $produk->nama_produk = $request->nama_produk;
+    $produk->harga       = $request->harga;
+    $produk->stok        = $request->stok;
+    $produk->kategori_id = $request->kategori_id; // Simpan kategori_id ke database
 
-        $produk->save();
-        return redirect()->route('produk.index');
-    }
+    // Simpan produk ke database
+    $produk->save();
+
+    return redirect()->route('produk.index');
+}
+
 
     public function show($id)
     {
@@ -53,7 +57,8 @@ class ProdukController extends Controller
     public function edit($id)
     {
         $produk = Produk::findOrFail($id);
-        return view('produk.edit', compact('produk'));
+        $kategoris = Kategori::all(); // Ambil data kategori untuk form edit
+        return view('produk.edit', compact('produk', 'kategoris'));
     }
 
     public function update(Request $request, $id)
@@ -61,35 +66,25 @@ class ProdukController extends Controller
         $validated = $request->validate([
             'nama_produk' => 'required|min:5',
             'harga'       => 'required',
-            'stok'        => 'required|',
+            'stok'        => 'required',
+            'kategori_id' => 'required|exists:kategoris,id', // Pastikan kategori_id ada di tabel kategoris
         ]);
 
         $produk              = Produk::findOrFail($id);
         $produk->nama_produk = $request->nama_produk;
         $produk->harga       = $request->harga;
         $produk->stok        = $request->stok;
-        // if ($request->hasFile('image')) {
-        //     // menghapus foto lama
-        //     Storage::disk('public')->delete($produk->image);
+        $produk->kategori_id = $request->kategori_id; // Update kategori_id
 
-        //     // upload foto baru
-        //     $file       = $request->file('image');
-        //     $randomName = Str::random(20) . '.' . $file->getClientOriginalExtension();
-        //     $path       = $file->storeAs('produks', $randomName, 'public');
-        //     // memasukan nama_produk image nya ke database
-        //     $produk->image = $path;
-        // }
+        // Simpan perubahan produk ke database
         $produk->save();
         return redirect()->route('produk.index');
-
     }
 
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
-        // Storage::disk('public')->delete($produk->image);
         $produk->delete();
         return redirect()->route('produk.index');
-
     }
 }
