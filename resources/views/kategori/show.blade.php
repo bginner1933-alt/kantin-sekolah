@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -15,11 +14,23 @@
                     @if ($kategori->image)
                         <img src="{{ Storage::url($kategori->image) }}" class="w-100 rounded mb-3" alt="{{ $kategori->nama }}">
                     @else
-                        <h4 class="fw-bold">{{ $kategori->nama }}</h4>
-                        <p class="mt-2 mb-1">Nama Kategori: <strong>{{ ($kategori->alamat) }}</strong></p>
+                        <p class="mt-2 mb-1">Nama Kategori: <strong>{{ ($kategori->nama) }}</strong></p>
+                        <p class="mt-2">{!! $kategori->deskripsi !!}</p>
+                    @endif
+                    @if ($kategori->image)
+                        <img src="{{ Storage::url($kategori->image) }}" class="w-100 rounded mb-3" alt="{{ $kategori->nama }}">
+                    @else
+                        <p class="mt-2 mb-1">Nama Alamat: <strong>{{ ($kategori->alamat) }}</strong></p>
+                        <p class="mt-2">{!! $kategori->deskripsi !!}</p>
+                    @endif
+                    @if ($kategori->image)
+                        <img src="{{ Storage::url($kategori->image) }}" class="w-100 rounded mb-3" alt="{{ $kategori->nama }}">
+                    @else
+                        <p class="mt-2 mb-1">No Telepon: <strong>{{ ($kategori->no_telepon) }}</strong></p>
                         <p class="mt-2">{!! $kategori->deskripsi !!}</p>
                     @endif
                 </div>
+
             </div>
         </div>
     </div>

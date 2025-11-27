@@ -10,7 +10,7 @@
                         Kategori
                     </div>
                     <div class="float-end">
-                        <a href="{{ route('kategori.create') }}" class="btn btn-sm btn-kategoriprimary">Tambah Data</a>
+                        <a href="{{ route('kategori.create') }}" class="btn btn-sm btn-outline-primary">Tambah Data</a>
                     </div>
                 </div>
 
